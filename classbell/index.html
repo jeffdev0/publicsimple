@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <body style="text-align: center;">
+    <h1 id="h1_minit"></h1>
+
+    <h2 id="countdown" style="font-weight: bold;"></h2>
+
+    <audio id="classbell" controls="" preload="auto"><source src="School_Bell_Ringing_sound.mp3#t=4" type="audio/mp3"></audio>
+        <br><br>
+    <audio id="classbell2" autoplay="true" loop muted preload="auto"><source src="School_Bell_Ringing_sound.mp3#t=4" type="audio/mp3"></audio>
+
+    <br><br>
+    
+    <input type="button" value="Activate" onclick="activated(this)" style="width: 100px; height: 50px;">
+
+    <script>
+        //minute bell inteval (please change)
+        //var minute_interval = 1
+
+        //get minute_interval from url
+
+        var c_url = window.location.href;
+        var minute_interval = c_url.split("?t=")[1];
+        // console.log(minute_interval);
+
+        if (minute_interval==undefined){
+            // console.log("dfg")
+            minute_interval = 1
+        }
+
+        document.getElementById("h1_minit").innerHTML = minute_interval + " Minit"
+
+        var time_interval = minute_interval*60*1000;
+        var player = document.getElementById('classbell');
+        var player2 = document.getElementById('classbell2');
+
+        // var time_interval = 1000*6;
+        
+        function activated(thisEL){ 
+            thisEL.value = "activated";
+            player.currentTime = 3;
+            player.play();
+            player.volume = "0";
+            // player.muted = !player.muted;
+            player2.play();
+        }
+
+        function ring(){
+            player.currentTime = 3;
+            player.volume = "1";
+            // player.muted = !player.muted;
+            player.play();
+        }
+    
+        function checktimeloop(){
+            var epochnow =  Math.round(Date.now()/1000);
+            if (epochnow % (time_interval/1000) == 0){
+                console.log("ok")
+                ring()
+            } else {console.log("no ring")}
+        }
+
+        setInterval (function(){
+            checktimeloop();
+        }, 1000);
+
+        </script>
+  </body>
+</html>
