@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv='cache-control' content='no-cache'> 
+  <meta http-equiv='expires' content='0'> 
+  <meta http-equiv='pragma' content='no-cache'>
   <body style="text-align: center;">
     <h1 id="h1_minit"></h1>
 
@@ -13,23 +16,19 @@
     <br><br>
     
     <input type="button" value="Activate" onclick="activated(this)" style="width: 100px; height: 50px;">
+    <style>.activated {color: white; background-color: green;}</style>
 
     <script>
-        //minute bell inteval (please change)
-        //var minute_interval = 1
-
-        //get minute_interval from url
 
         var c_url = window.location.href;
         var minute_interval = c_url.split("?t=")[1];
         // console.log(minute_interval);
 
-        if (minute_interval==undefined){
-            // console.log("dfg")
+        if (isNaN(minute_interval)){
             minute_interval = 1
         }
 
-        document.getElementById("h1_minit").innerHTML = minute_interval + " Minit"
+        document.getElementById("h1_minit").innerHTML = minute_interval + " Minit seterusnya"
 
         var time_interval = minute_interval*60*1000;
         var player = document.getElementById('classbell');
@@ -37,15 +36,6 @@
 
         // var time_interval = 1000*6;
         
-        function activated(thisEL){ 
-            thisEL.value = "activated";
-            player.currentTime = 3;
-            player.play();
-            player.volume = "0";
-            // player.muted = !player.muted;
-            player2.play();
-        }
-
         function ring(){
             player.currentTime = 3;
             player.volume = "1";
@@ -55,15 +45,34 @@
     
         function checktimeloop(){
             var epochnow =  Math.round(Date.now()/1000);
-            if (epochnow % (time_interval/1000) == 0){
-                console.log("ok")
+            var t_interval = time_interval/1000
+            if (epochnow % (t_interval) == 0){
+                document.getElementById("countdown").innerHTML = "dalam " + "0s"
+                // console.log("ring")
                 ring()
-            } else {console.log("no ring")}
+            } 
+            else {
+                var nextl = Math.ceil(epochnow/t_interval);
+                var nexttime = t_interval * nextl
+                var timeleft = nexttime-epochnow
+                document.getElementById("countdown").innerHTML = "dalam " + timeleft + "s"
+                // console.log("no ring")}
+            }   
         }
 
-        setInterval (function(){
-            checktimeloop();
-        }, 1000);
+        function activated(thisEL){ 
+            thisEL.value = "activated";
+            thisEL.className = "activated";
+
+            player.currentTime = 3;
+            player.play();
+            player.volume = "0";
+            player2.play();
+
+            setInterval (function(){
+                checktimeloop();
+            }, 1000);
+        }
 
         </script>
   </body>
