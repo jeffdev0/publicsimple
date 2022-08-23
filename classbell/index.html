@@ -37,7 +37,7 @@
         // var time_interval = 1000*6;
         
         function ring(){
-            player.currentTime = 3;
+            player.currentTime = 0;
             player.volume = "1";
             // player.muted = !player.muted;
             player.play();
@@ -64,7 +64,7 @@
             thisEL.value = "activated";
             thisEL.className = "activated";
 
-            player.currentTime = 3;
+            player.currentTime = 0;
             player.play();
             player.volume = "0";
             player2.play();
