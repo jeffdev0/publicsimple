@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Share_screen.html</title>
+  </head>
+  <body>
+    
+    <h1>Screen Sharing</h1>
+    
+    <button onclick="shareScreen()">Share Screen</button>
+    
+    <script>
+      function shareScreen() {
+        // Get the media devices
+        navigator.mediaDevices.getDisplayMedia({
+          // video: {
+          //   width: { ideal: 1920 },
+          //   height: { ideal: 1080 }
+          // },
+          video: {
+            width: { ideal: 3840 },
+            height: { ideal: 2160 }
+          }
+        })
+          .then(stream => {
+            // Get the video element
+            const video = document.querySelector('video');
+            video.style.position = "absolute" 
+            // Set the video source to the stream
+            video.srcObject = stream;
+            // Play the video
+            video.play();
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    </script>
+    <video autoplay></video>
+    
+    <style>
+      video{
+        width: 100vw; height: 100vh;
+        top: 0;
+        left: 0;
+        background: black;
+        }
+    </style>
+  </body>
+</html>

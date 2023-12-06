@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple CHATGPT PWA</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-128.png" type="image/x-icon" />
+  
+  </head>
+  <body>
+    <div id="output"></div>
+    <div id="key_wraper">
+      API Key
+      <input id="apikeysave" type="text" placeholder="please keyin chatGPT APIkey" style="width: auto;">
+      <!-- <input type="submit" value="save" /> -->
+  </div>
+
+  <div id="temp_wraper">
+    creativity temperature (min 0, max 1, default 0.5)
+    <input id="temp" type="text" placeholder="higher more creative" style="width: auto;">
+    <!-- <input type="submit" value="save" /> -->
+</div>
+
+  
+
+
+Your Query: <input type="button" value="clear" onclick="clear_me()" />
+  <form id="myForm" action="https://api.openai.com/v1/completions" method="POST">
+    <div>
+      <textarea rows="5" name="name"></textarea>
+      <input type="submit" value="Submit" onclick="submitForm(event)" />
+    </div>
+      <input type="submit" value="Submit" onclick="submitForm(event)" />
+
+
+  </form>
+
+  <br><br><br>
+
+  <script> 
+
+// var apiKey = "api key"
+// const endpoint = "https://api.openai.com/v1/completions";
+
+const model = "text-davinci-003";
+const max_tokens = 4000
+
+var ask_box = document.querySelector('#myForm textarea')
+// var ask_text = ask_box.value
+
+function clear_me(){
+  // event.preventDefault(); // prevent the default form submission
+  ask_box.value = '';
+}
+
+
+function submitForm(event) {
+    event.preventDefault(); // prevent the default form submission
+
+    var apiKey = document.querySelector("#apikeysave").value
+    temperature = Number(document.getElementById("temp").value);
+    if (temperature==''){
+      temperature = Number(0.5);
+    }
+
+    document.getElementById("temp").value = temperature;
+    
+
+    // localStorage.setItem("apiKey", apiKey);
+    document.querySelector("#key_wraper").style.display = "none";
+    var Authorization = "Bearer "+ apiKey
+
+    const form = document.getElementById('myForm');
+
+
+    var outputDiv = document.getElementById('output');
+    var q_el = document.createElement("p")
+
+    var ask_text = ask_box.value
+    q_el.innerHTML = ask_text
+    outputDiv.appendChild(q_el)
+
+
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "Authorization": Authorization
+    });
+
+    const body = JSON.stringify({
+        model: model,
+        prompt: ask_text,
+        max_tokens: max_tokens,
+        n: 1,
+        temperature: temperature,
+      });
+
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
+    .then(response => response.text())
+    .then(data => {
+      // console.log(data)
+
+      data = JSON.parse(data);
+
+      data = data.choices[0].text;
+    
+    // Get the answer - i.e. output
+
+      var a_el = document.createElement("div")
+      a_el.innerHTML = data
+      outputDiv.appendChild(a_el)
+
+      if (document.querySelector("#output>div > xmp") ){} else{
+        function myfunction() {
+        document.querySelectorAll('#output>div').forEach( function(div) { div.innerHTML = div.innerHTML.replace(/\n/g, '<br>'); });
+        }
+        myfunction()
+      }
+      
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }
+  </script>
+  <style>
+
+  label > textarea{
+    width: 100%
+  }
+
+  #myForm > input{
+    width: 100%;
+    height: 4rem;
+  }
+
+
+  
+  div#output > div {
+      background: #cfffcf;
+      padding: 10px;
+  }
+
+  div#output > p {
+      background: azure;
+      padding: 10px;
+      margin: 5px;
+  }
+  div#output {
+      background: aliceblue;
+      padding: 1rem;
+  }
+
+  form#myForm > div > input {
+    width: 10vw;
+    min-width: 70px;
+    max-width: 100px;
+  }
+  form#myForm > div > textarea {
+      width: 90vw;
+      min-width: 300px;
+  }
+  form#myForm > div {
+      display: flex;
+  }
+  </style>
+
+<script src="main.js"></script>
+
+  </body>
+</html>

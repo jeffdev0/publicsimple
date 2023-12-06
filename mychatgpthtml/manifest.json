@@ -1,0 +1,17 @@
+{
+  "name": "Simple CHATGPT PWA",
+  "short_name": "CHATGPT PWA",
+  "icons": [{
+    "src": "icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    }, {
+      "src": "icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }],
+  "start_url": "chat.html",
+  "display": "standalone",
+  "background_color": "white",
+  "theme_color": "white"
+}
