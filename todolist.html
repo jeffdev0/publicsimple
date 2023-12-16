@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Todo List App</title>
+  <script src="https://unpkg.com/vue@3.3.0/dist/vue.global.js"></script>
+</head>
+<body>
+  <div id="app">
+    <h1>Todo List</h1>
+    <input v-model="newTodo" ref="todoInput" type="text" placeholder="Enter a new task" @keydown.enter="addTodo">
+    <button @click="addTodo">Add</button>
+    <br>
+    <button @click="clearAll">Clear All</button>
+
+    <ul>
+      <li v-for="(todo, index) in todos" :key="index">
+        {{ todo }}
+        <button @click="removeTodo(index)">Remove</button>
+      </li>
+    </ul>
+  </div>
+
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          newTodo: '',
+          todos: []
+        };
+      },
+      mounted() {
+        this.loadTodos();
+      },
+      methods: {
+        addTodo() {
+          if (this.newTodo.trim() !== '') {
+            this.todos.push(this.newTodo);
+            this.saveTodos();
+            this.newTodo = '';
+            this.$nextTick(() => {
+              this.$refs.todoInput.focus();
+            });
+          }
+        },
+        removeTodo(index) {
+          this.todos.splice(index, 1);
+          this.saveTodos();
+        },
+        clearAll() {
+          this.todos = [];
+          this.saveTodos();
+        },
+        saveTodos() {
+          localStorage.setItem('todos', JSON.stringify(this.todos));
+        },
+        loadTodos() {
+          const savedTodos = localStorage.getItem('todos');
+          if (savedTodos) {
+            this.todos = JSON.parse(savedTodos);
+          }
+        },
+      },
+    });
+
+    app.mount('#app');
+  </script>
+</body>
+</html>
