@@ -9,6 +9,16 @@
       padding: 15px;
       margin: 5px;
     }
+    #app ul {
+      padding-left: 50px;
+    }
+    #app ul > li {
+      margin: 5px;
+    }
+    #app ul > li > button{
+      position: absolute;
+      left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -22,7 +32,7 @@
     <ul>
       <li v-for="(todo, index) in todos" :key="index">
         {{ todo }}
-        <button @click="removeTodo(index)">Remove</button>
+        <button @click="removeTodo(index)">x</button>
       </li>
     </ul>
   </div>
