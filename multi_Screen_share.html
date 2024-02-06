@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Moveable Iframe</title>
+  <style>
+    html{
+      background-color: black;
+      overflow: hidden;
+      margin-top: 50px;
+      }
+
+    .hidden{
+      visibility: hidden;
+     
+    }
+    
+    .container.bnone {
+      border:none;
+    } 
+
+    .container {
+      position: absolute;
+      border: none;
+      border-radius: 0%;
+      z-index: 1;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      border: 2px white solid;
+      
+    }
+
+    .iframe {
+      width: 400px;
+      height: 400px;
+      max-width: 100vh;
+      max-height: 100vw;
+      min-width: 40px;
+      min-height: 40px;
+      margin-top: 10px;
+      border: none;
+      resize: both;
+      overflow: hidden;
+    }
+
+    .slider {
+      width: 200px;
+    }
+
+    .button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container1" ondblclick=
+  "this.querySelector('#buttonX').click()">
+    <div>
+      <button class="button" id="buttonX" onclick="toggleElementVisibility(this)">X</button>
+      <button class="button" onclick="addContainer()">Add Container</button>
+      <input class="slider" type="range" min="0" max="50" value="0" onchange="changeBorderRadius(this.value)">
+    </div>
+    <iframe class="iframe" src="Share_screen.html" ></iframe>
+
+  </div>
+
+  <script>
+    let containerCount = 1;
+    let activeContainer = 1;
+
+    function makeContainerMoveable(containerId) {
+      const container = document.getElementById(containerId);
+
+      let posX = 0, posY = 0, mouseX = 0, mouseY = 0;
+      let dragging = false;
+
+      container.addEventListener('mousedown', onMouseDown);
+      container.addEventListener('mouseup', onMouseUp);
+      container.addEventListener('mousemove', onMouseMove);
+
+      function onMouseDown(e) {
+        if (e.target === container) {
+          dragging = true;
+          posX = container.offsetLeft;
+          posY = container.offsetTop;
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+        }
+      }
+
+      function onMouseUp() {
+        dragging = false;
+      }
+
+      function onMouseMove(e) {
+        if (dragging) {
+          const dx = e.clientX - mouseX;
+          const dy = e.clientY - mouseY;
+          container.style.left = posX + dx + 'px';
+          container.style.top = posY + dy + 'px';
+        }
+      }
+    }
+
+    function addContainer() {
+      containerCount++;
+      const newContainer = document.createElement('div');
+      const newContainer2 = document.createElement('div');
+      newContainer.classList.add('container');
+      newContainer.id = 'container' + containerCount;
+      newContainer.setAttribute('ondblclick', "this.querySelector('#buttonX').click()");
+
+      const newIframe = document.createElement('iframe');
+      newIframe.classList.add('iframe');
+      newIframe.src = 'Share_screen.html';
+
+      const newButton = document.createElement('button');
+      newButton.classList.add('button');
+      newButton.textContent = 'Add Container';
+      newButton.onclick = addContainer;
+
+      const newButtonX = document.createElement('button');
+      newButtonX.classList.add('button');
+      newButtonX.textContent = 'X';
+      newButtonX.id = 'buttonX'
+      // newButtonX.onclick = 'toggleElementVisibility(this)';
+      newButtonX.setAttribute("onclick", "toggleElementVisibility(this)");
+
+      const newRadius = document.createElement('input');
+      newRadius.classList.add('slider');
+      newRadius.type = 'range';
+      newRadius.min = '0';
+      newRadius.max = '50';
+      newRadius.value = '0';
+      newRadius.setAttribute('onchange', 'changeBorderRadius(this.value)');
+
+      document.body.appendChild(newContainer);
+      newContainer2.appendChild(newButtonX);
+      newContainer2.appendChild(newButton);
+      newContainer2.appendChild(newRadius);
+      newContainer.appendChild(newContainer2);
+      newContainer.appendChild(newIframe);
+      makeContainerMoveable(newContainer.id);
+    }
+
+    function changeBorderRadius(value) {
+      const contain = document.getElementById('container' + activeContainer);
+      const container = contain.querySelector('iframe')
+      container.style.borderRadius = value + '%';
+    }
+
+    function handleHotkey(e) {
+      if (e.altKey) {
+        const containerIndex = parseInt(e.key) - 1;
+        const containers = document.getElementsByClassName('container');
+        if (containerIndex >= 0 && containerIndex < containers.length) {
+          activeContainer = containerIndex + 1;
+          Array.from(containers).forEach((container, index) => {
+            container.style.zIndex = index === containerIndex ? 1 : 0;
+          });
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleHotkey);
+    makeContainerMoveable('container1');
+
+    function toggleElementVisibility(el) {
+      // console.log("asd")
+      const otherElement = el.parentElement;
+      otherElement.classList.toggle('hidden');
+      otherElement.parentElement.classList.toggle('bnone');
+    }
+
+  </script>
+
+</body>
+</html>
